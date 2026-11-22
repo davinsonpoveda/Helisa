@@ -174,6 +174,7 @@ Plan completo y esquema en [FRONTEND-PLAN.md](./FRONTEND-PLAN.md). Misma arquite
 | F2 · Gateway HTTP | `HttpAccountsGateway` con `fetch`. Traduce los errores de la API al campo del formulario y los fallos de red a un mensaje legible. | 9 tests. |
 | F3 · Hooks | `useAccountTree`, `useCreateAccount`, `useDeleteAccount` sobre TanStack Query: carga, error con reintento y recarga del árbol tras crear o eliminar. | Sin tests (el runner no tiene DOM). |
 | F4 · Árbol y eliminar | `AccountTree` con expandir/colapsar (componente recursivo propio, con `aria-expanded`), `ConfirmDeleteModal` y alerta con el error de la API (p. ej. cuenta con hijas). | Probado a mano. |
+| F5 · Formulario y App | `CreateAccountForm` (Mantine Form): validación antes de enviar y errores, locales o de la API, junto a su campo. `App` en dos columnas. | Probado en el navegador: padre inexistente (422) y código inválido muestran el error junto al campo. |
 
 ### Cómo se trabajó
 
