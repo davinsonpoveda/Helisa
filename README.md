@@ -29,6 +29,12 @@ Abre http://localhost:5173. El catálogo arranca con el ejemplo del enunciado.
 
 API: `GET /accounts` (árbol anidado), `POST /accounts` `{ code, name, nature? }`, `DELETE /accounts/:code`. Los errores salen como `{ statusCode, error, message }`.
 
+## Demo
+
+**[Ver la demo (GIF en Google Drive)](https://drive.google.com/file/d/1oXCFJn7lBcOrZUuK1hCixrR1PRiNhPRx/view?usp=sharing)**
+
+Recorrido de las pruebas en la pantalla: expandir el árbol, crear una cuenta, el error de la API junto al campo cuando el padre no existe, eliminar con confirmación y el error al eliminar una cuenta con hijas.
+
 ## Decisiones
 
 - **Clean Architecture y SOLID en las dos mitades** (`domain` → `application` → `infrastructure` → `presentation`). Las reglas viven en el dominio y los casos de uso; el controller solo traduce HTTP.
