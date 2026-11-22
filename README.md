@@ -173,6 +173,7 @@ Plan completo y esquema en [FRONTEND-PLAN.md](./FRONTEND-PLAN.md). Misma arquite
 | F1 · Validación | `validateAccountForm`: código obligatorio, solo dígitos, largo 1/2/4/6, sin `0` inicial; nombre obligatorio; naturaleza obligatoria en clases y prohibida en el resto. | 24 tests. |
 | F2 · Gateway HTTP | `HttpAccountsGateway` con `fetch`. Traduce los errores de la API al campo del formulario y los fallos de red a un mensaje legible. | 9 tests. |
 | F3 · Hooks | `useAccountTree`, `useCreateAccount`, `useDeleteAccount` sobre TanStack Query: carga, error con reintento y recarga del árbol tras crear o eliminar. | Sin tests (el runner no tiene DOM). |
+| F4 · Árbol y eliminar | `AccountTree` con expandir/colapsar (componente recursivo propio, con `aria-expanded`), `ConfirmDeleteModal` y alerta con el error de la API (p. ej. cuenta con hijas). | Probado a mano. |
 
 ### Cómo se trabajó
 
