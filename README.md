@@ -5,7 +5,7 @@ Módulo que administra el catálogo de cuentas de un software contable: lista je
 | Carpeta | Qué hay | Puerto | Estado |
 |---------|---------|:------:|--------|
 | `api/` | NestJS 12 + TypeScript, con Clean Architecture | 3000 | ✅ Núcleo listo |
-| `web/` | React 19 + Vite + TypeScript | 5173 | ⏳ Pendiente (pantalla) |
+| `web/` | React 19 + Vite + TypeScript + Mantine + TanStack Query | 5173 | 🚧 En construcción (ver bitácora del frontend) |
 
 ## Cómo correrlo
 
@@ -162,6 +162,14 @@ curl -X DELETE http://localhost:3000/accounts/110515
 | 4 · Limpieza y docs | Eliminado el Hello World (`AppController`, `AppService`, su spec y su e2e), `AppModule` solo importa `AccountsModule`, README reescrito | `tsc` y lint limpios; 56 unitarias y 17 e2e pasan; API probada en vivo. |
 
 Para el detalle archivo por archivo, ver [BACKEND-NUCLEO.md](./BACKEND-NUCLEO.md). El plan original está en [PLAN.md](./PLAN.md).
+
+### Bitácora del frontend
+
+Plan completo y esquema en [FRONTEND-PLAN.md](./FRONTEND-PLAN.md). Misma arquitectura por capas que el backend: `domain` → `application` → `infrastructure` → `presentation`, en `web/src/features/accounts/`.
+
+| Paso | Qué se hizo | Resultado |
+|---|---|---|
+| F0 · Contratos y dependencias | Se instalaron **Mantine** (componentes accesibles: árbol, modal, campos con error), **@mantine/form** (estado del formulario), **TanStack Query** (carga, error y recarga) y **Vitest** (pruebas). Se fijaron los tipos (`AccountNode`, `FieldErrors`), el error `AccountsApiError` (con el campo al que pertenece), el puerto `AccountsGateway`, las firmas de los 3 hooks y los providers en `main.tsx`. | Contratos fijos para trabajar en paralelo. Las funciones aún lanzan "Pendiente" hasta las tareas 1 a 3. |
 
 ### Cómo se trabajó
 
