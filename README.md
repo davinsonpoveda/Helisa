@@ -171,6 +171,7 @@ Plan completo y esquema en [FRONTEND-PLAN.md](./FRONTEND-PLAN.md). Misma arquite
 |---|---|---|
 | F0 · Contratos y dependencias | Se instalaron **Mantine** (componentes accesibles: árbol, modal, campos con error), **@mantine/form** (estado del formulario), **TanStack Query** (carga, error y recarga) y **Vitest** (pruebas). Se fijaron los tipos (`AccountNode`, `FieldErrors`), el error `AccountsApiError` (con el campo al que pertenece), el puerto `AccountsGateway`, las firmas de los 3 hooks y los providers en `main.tsx`. | Contratos fijos para trabajar en paralelo. Las funciones aún lanzan "Pendiente" hasta las tareas 1 a 3. |
 | F1 · Validación | `validateAccountForm`: código obligatorio, solo dígitos, largo 1/2/4/6, sin `0` inicial; nombre obligatorio; naturaleza obligatoria en clases y prohibida en el resto. | 24 tests. |
+| F2 · Gateway HTTP | `HttpAccountsGateway` con `fetch`. Traduce los errores de la API al campo del formulario y los fallos de red a un mensaje legible. | 9 tests. |
 
 ### Cómo se trabajó
 
