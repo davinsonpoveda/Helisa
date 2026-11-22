@@ -1,41 +1,34 @@
-import { useEffect, useState } from 'react'
-import { apiUrl } from './api'
-
-type Estado =
-  | { tipo: 'cargando' }
-  | { tipo: 'ok'; mensaje: string }
-  | { tipo: 'error'; mensaje: string }
+import { Container, Grid, Paper, Title } from '@mantine/core'
+import { AccountTree } from './features/accounts/presentation/AccountTree'
+import { CreateAccountForm } from './features/accounts/presentation/CreateAccountForm'
 
 function App() {
-  const [estado, setEstado] = useState<Estado>({ tipo: 'cargando' })
-
-  useEffect(() => {
-    fetch(apiUrl('/'))
-      .then((respuesta) => {
-        if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`)
-        return respuesta.text()
-      })
-      .then((mensaje) => setEstado({ tipo: 'ok', mensaje }))
-      .catch((error: Error) => setEstado({ tipo: 'error', mensaje: error.message }))
-  }, [])
-
   return (
-    <main>
-      <h1>Arranque de la prueba técnica</h1>
-      <p>
-        Esta pantalla existe solo para comprobar que el frontend le llega a la API.
-        Bórrala y construye lo tuyo.
-      </p>
+    <Container size="lg" py="xl">
+      <Title order={1} mb="lg">
+        Catálogo de cuentas
+      </Title>
 
-      {estado.tipo === 'cargando' && <p>Consultando la API...</p>}
-      {estado.tipo === 'ok' && <p>La API respondió: {estado.mensaje}</p>}
-      {estado.tipo === 'error' && (
-        <p>
-          No se pudo hablar con la API ({estado.mensaje}). Revisa que esté
-          corriendo en {apiUrl('')}.
-        </p>
-      )}
-    </main>
+      <Grid gap="lg">
+        <Grid.Col span={{ base: 12, md: 7 }}>
+          <Paper withBorder p="md" radius="md">
+            <Title order={3} mb="sm">
+              Cuentas
+            </Title>
+            <AccountTree />
+          </Paper>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, md: 5 }}>
+          <Paper withBorder p="md" radius="md">
+            <Title order={3} mb="sm">
+              Nueva cuenta
+            </Title>
+            <CreateAccountForm />
+          </Paper>
+        </Grid.Col>
+      </Grid>
+    </Container>
   )
 }
 

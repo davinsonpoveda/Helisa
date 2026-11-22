@@ -8,7 +8,7 @@
     "dev:api": "npm run start:dev --prefix api",
     "dev:web": "npm run dev --prefix web",
     "build": "npm run build --prefix api && npm run build --prefix web",
-    "test": "npm test --prefix api",
+    "test": "npm test --prefix api && npm test --prefix web",
     "lint": "npm run lint --prefix api && npm run lint --prefix web",
     "postinstall": "npm install --prefix api && npm install --prefix web"
   },

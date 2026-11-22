@@ -1,47 +1,65 @@
-# Arranque de la prueba técnica full-stack
+# Catálogo de cuentas — Aravia
 
-Backend y frontend listos para correr, ya conectados entre sí. Es el punto de partida de la prueba, para que no gastes tiempo en instalar y configurar.
+Módulo que administra el catálogo jerárquico de cuentas (Clase → Grupo → Cuenta → Subcuenta): API en NestJS y pantalla en React.
 
-| Carpeta | Qué hay | Puerto |
-|---------|---------|:------:|
-| `api/` | NestJS con TypeScript, con CORS habilitado hacia el front | 3000 |
-| `web/` | React con Vite y TypeScript | 5173 |
-
-Trae **solo lo que generan los CLI de Nest y de Vite**. No hay estructura de capas, ni entidades, ni interfaces de repositorio, ni librería de componentes, ni manejo de estado. Esas decisiones son tuyas y son parte de lo que se evalúa, así que cuéntanos en voz alta por qué las tomas. Si quieres reorganizar las carpetas, hazlo y explica por qué.
-
-## Requisitos
-
-- **Node 22** (está en `.nvmrc`, con `nvm use` queda listo).
-- **npm 10 o superior.** Con npm 9.2 la instalación falla. Revisa con `npm -v` antes de empezar.
-
-## Cómo correrlo
-
-```bash
-npm install     # instala la raíz, api/ y web/
-npm run dev     # levanta los dos a la vez
+```mermaid
+flowchart LR
+    UI["web/ · React + Mantine<br/>árbol · formulario · eliminar"] -->|HTTP| API["api/ · NestJS<br/>controller → casos de uso"]
+    API --> DOM["Dominio<br/>reglas 1-8"]
+    API -.puerto.-> REPO[["AccountRepository"]]
+    MEM["Repo en memoria"] -.implementa.-> REPO
 ```
 
-Abre http://localhost:5173. Si ves *La API respondió: Hello World!*, el frontend está hablando con el backend y puedes empezar.
+## Cómo se corre
 
-Esa pantalla existe solo para comprobar la conexión. Bórrala y construye lo tuyo.
+Requisitos: Node 22 (`.nvmrc`) y npm 10 o superior.
 
-## Scripts
+```bash
+npm install     # instala raíz, api/ y web/
+npm run dev     # API en :3000 y web en :5173
+```
+
+Abre http://localhost:5173. El catálogo arranca con el ejemplo del enunciado.
 
 | Script | Qué hace |
-|--------|----------|
-| `npm run dev` | Levanta la API y el front juntos, en modo watch |
-| `npm run dev:api` | Solo la API |
-| `npm run dev:web` | Solo el front |
-| `npm run build` | Compila los dos |
-| `npm test` | Corre las pruebas de la API con Vitest |
-| `npm run lint` | Revisa los dos con oxlint |
+|---|---|
+| `npm test` | Pruebas unitarias de `api/` y `web/` (Vitest) |
+| `npm run test:e2e --prefix api` | Pruebas e2e de la API |
+| `npm run lint` · `npm run build` | Lint y compilación de los dos |
 
-## Configuración
+API: `GET /accounts` (árbol anidado), `POST /accounts` `{ code, name, nature? }`, `DELETE /accounts/:code`. Los errores salen como `{ statusCode, error, message }`.
 
-El front lee la URL de la API de `VITE_API_URL`. Si no defines la variable, usa `http://localhost:3000`, así que no tienes que configurar nada para empezar. El ejemplo está en [`web/.env.example`](./web/.env.example).
+## Demo
 
-La API acepta peticiones del origen que diga `WEB_ORIGIN`, y por defecto `http://localhost:5173`. Si cambias el puerto del front, cambia esa variable.
+**[Ver la demo (GIF en Google Drive)](https://drive.google.com/file/d/1oXCFJn7lBcOrZUuK1hCixrR1PRiNhPRx/view?usp=sharing)**
 
-## Antes de entregar
+Recorrido de las pruebas en la pantalla: expandir el árbol, crear una cuenta, el error de la API junto al campo cuando el padre no existe, eliminar con confirmación y el error al eliminar una cuenta con hijas.
 
-Reemplaza este archivo por tu propio `README.md`, con cómo se corre tu proyecto, qué decisiones tomaste, qué dejaste afuera y qué harías con más tiempo.
+## Decisiones
+
+- **Clean Architecture y SOLID en las dos mitades** (`domain` → `application` → `infrastructure` → `presentation`). Las reglas viven en el dominio y los casos de uso; el controller solo traduce HTTP.
+- **Nivel, padre y naturaleza se derivan del código**, no se guardan, así no pueden quedar incoherentes. `acceptsMovements` se calcula al consultar.
+- **La API es la fuente de verdad.** El front valida antes de enviar (formato y naturaleza) solo para dar respuesta rápida; la existencia del padre y la unicidad las decide el servidor, y su error se muestra junto al campo que corresponde.
+- **Errores de negocio con un `kind` propio**, traducidos a 400, 404, 409 o 422 en un único filtro. El gateway del front los convierte al campo del formulario.
+- **Librerías del front:** Mantine (componentes accesibles, modal y campos con error), `@mantine/form` (estado del formulario) y TanStack Query (carga, error, reintento y recarga del árbol tras crear o eliminar). Mantine solo vive en `presentation` y TanStack Query en `application`.
+- **Árbol propio y recursivo** en lugar del `Tree` de Mantine, para controlar `aria-expanded` y el botón de eliminar por fila.
+- **Persistencia en memoria**: el starter no trae base de datos. Gracias al puerto, cambiarla no toca dominio ni casos de uso.
+
+## Qué dejé afuera
+
+- Base de datos: al reiniciar la API se pierde lo creado.
+- Renombrar o mover cuentas (el código es inmutable a propósito) y un botón "Agregar hija" que precargue el prefijo.
+- Pruebas de los hooks y de los componentes (el runner de `web/` no tiene DOM); hay pruebas de validación y del gateway.
+- Swagger, autenticación y paginación.
+
+## Qué haría con más tiempo
+
+- Un adaptador SQL del repositorio con las mismas pruebas de contrato que el de memoria.
+- Pruebas de componentes con Testing Library y un recorrido e2e con Playwright.
+- Renombrar cuentas y movimientos contables sobre las hojas (regla 6).
+- Documentar la API con OpenAPI y compartir los tipos con el front.
+- CI con lint, pruebas y build.
+
+## Más detalle
+
+El paso a paso de cada commit está en [docs/BITACORA.md](./docs/BITACORA.md). También hay [el detalle del backend](./docs/BACKEND-NUCLEO.md), [el plan del frontend](./docs/FRONTEND-PLAN.md) y [el plan inicial](./docs/PLAN.md).
